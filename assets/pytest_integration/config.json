@@ -1,0 +1,27 @@
+{
+  "model_name": "__MODEL_NAME__",
+  "action_name": "__MODEL_NAME__",
+  "key_columns": [
+    "<key_col_1>",
+    "<key_col_2>"
+  ],
+  "columns": [
+    "<key_col_1>",
+    "<key_col_2>",
+    "<output_col_3>"
+  ],
+  "column_types": {
+    "<key_col_1>": "int",
+    "<key_col_2>": "date",
+    "<output_col_3>": "string"
+  },
+  "scenario_cases": [
+    {
+      "id": "S1_example",
+      "key": {
+        "<key_col_1>": 1,
+        "<key_col_2>": "2024-01-01"
+      }
+    }
+  ]
+}

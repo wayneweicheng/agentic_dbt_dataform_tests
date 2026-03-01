@@ -1,0 +1,37 @@
+{
+  "model_name": "__MODEL_NAME__",
+  "dbt_command": "run",
+  "dbt_select": "__MODEL_NAME__",
+  "target_table": "__PROJECT_ID__.__TARGET_SCHEMA__.__MODEL_NAME__",
+  "dbt_vars": {
+    "source_project": "__PROJECT_ID__",
+    "source_dataset": "__SOURCE_DATASET__",
+    "target_schema": "__TARGET_SCHEMA__"
+  },
+  "cleanup_datasets": [
+    "__SOURCE_DATASET__"
+  ],
+  "key_columns": [
+    "<key_col_1>",
+    "<key_col_2>"
+  ],
+  "columns": [
+    "<key_col_1>",
+    "<key_col_2>",
+    "<output_col_3>"
+  ],
+  "column_types": {
+    "<key_col_1>": "int",
+    "<key_col_2>": "date",
+    "<output_col_3>": "string"
+  },
+  "scenario_cases": [
+    {
+      "id": "S1_example",
+      "key": {
+        "<key_col_1>": 1,
+        "<key_col_2>": "2024-01-01"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+config {
+  type: "test",
+  dataset: "<model_name>"
+}
+
+-- Unit-test mode template (Dataform `type: "test"`).
+-- Dataform unit tests require direct dependency mocks for `${ref(...)}`
+-- of the model under test.
+
+-- Scenario matrix (derived from TECHSPEC):
+-- S1: <business_rule_or_edge_case> -> <expected_final_behavior>
+-- S2: <business_rule_or_edge_case> -> <expected_final_behavior>
+
+input "<direct_dependency_1>" {
+  SELECT <mock_col_1> AS <col_1>, <mock_col_2> AS <col_2> UNION ALL
+  SELECT <mock_col_1b>, <mock_col_2b>
+}
+
+input "<direct_dependency_2>" {
+  SELECT <mock_col_a> AS <col_a>, <mock_col_b> AS <col_b>
+}
+
+-- For source-only mocks + full DAG execution, use integration-test mode
+-- (seed source tables + dataform run + final table assertion), not this template.
+
+SELECT <expected_col_1> AS <col_1>, <expected_col_2> AS <col_2> UNION ALL
+SELECT <expected_col_1b>, <expected_col_2b>

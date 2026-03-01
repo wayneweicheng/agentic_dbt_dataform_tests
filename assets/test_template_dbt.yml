@@ -1,0 +1,18 @@
+# dbt unit-test mode template.
+# Replace placeholders with TECHSPEC-derived inputs and expected rows.
+
+unit_tests:
+  - name: test___MODEL_NAME___business_rules
+    model: __MODEL_NAME__
+    given:
+      - input: ref('<direct_dependency_1>')
+        rows:
+          - {<mock_col_1>: <mock_val_1>, <mock_col_2>: <mock_val_2>}
+          - {<mock_col_1>: <mock_val_1b>, <mock_col_2>: <mock_val_2b>}
+      - input: source('<source_name>', '<table_name>')
+        rows:
+          - {<mock_col_a>: <mock_val_a>, <mock_col_b>: <mock_val_b>}
+    expect:
+      rows:
+        - {<expected_col_1>: <expected_val_1>, <expected_col_2>: <expected_val_2>}
+        - {<expected_col_1>: <expected_val_1b>, <expected_col_2>: <expected_val_2b>}
