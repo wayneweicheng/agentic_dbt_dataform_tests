@@ -1,0 +1,15 @@
+{
+  "name": "dataform-agent-workflow-lab",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@dataform/core": "latest"
+  },
+  "devDependencies": {
+    "@dataform/cli": "latest"
+  },
+  "scripts": {
+    "compile": "dataform compile",
+    "run": "dataform run"
+  }
+}

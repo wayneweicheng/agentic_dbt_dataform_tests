@@ -1,0 +1,5 @@
+config {
+  type: "declaration",
+  schema: dataform.projectConfig.vars.source_dataset,
+  name: "raw_order_events"
+}

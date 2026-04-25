@@ -1,0 +1,4 @@
+order_date,customer_id,order_count,gross_revenue,discount_amount,net_revenue,first_order_ts,last_order_ts
+2026-01-01,C001,2,150,10,140,2026-01-01T10:00:00Z,2026-01-01T11:00:00Z
+2026-01-02,C002,1,150,25,125,2026-01-02T10:00:00Z,2026-01-02T10:00:00Z
+2026-01-03,C003,1,90,5,85,2026-01-03T11:00:00Z,2026-01-03T11:00:00Z
