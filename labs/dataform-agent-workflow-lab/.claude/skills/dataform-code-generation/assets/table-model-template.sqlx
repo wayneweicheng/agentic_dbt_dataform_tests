@@ -1,0 +1,20 @@
+config {
+  type: "table",
+  schema: dataform.projectConfig.defaultSchema,
+  name: "${target_table_name}",
+  description: "${description}"
+}
+
+WITH source_data AS (
+  SELECT *
+  FROM ${ref("${source_name}")}
+),
+
+business_rules AS (
+  SELECT *
+  FROM source_data
+  -- Apply extracted business rules here.
+)
+
+SELECT *
+FROM business_rules
