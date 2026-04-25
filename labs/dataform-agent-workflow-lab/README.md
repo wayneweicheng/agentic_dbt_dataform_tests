@@ -1,13 +1,13 @@
 # Dataform Agent Workflow Lab
 
-This lab demonstrates a complex workflow architecture using Claude Code subagents, Claude Code Agent Teams, and a Claude Agent SDK service deployable to Cloud Run with a Next.js frontend trigger.
+This lab demonstrates a complex workflow architecture using Claude Code subagents, Claude Code Agent Teams, and a Claude Code SDK service deployable to Cloud Run with a Next.js frontend trigger.
 
 ## Modes
 
 ```text
 Mode A: Claude Code subagents mode
 Mode B: Claude Code Agent Team mode
-Mode C: Claude Agent SDK service on Cloud Run triggered by Next.js
+Mode C: Claude Code SDK service on Cloud Run triggered by Next.js
 ```
 
 ## Workflow
@@ -45,7 +45,7 @@ tests/mock_data/                 Mock source CSVs
 tests/expected/                  Expected output CSVs
 tests/reports/                   Generated test reports
 scripts/                         Local and BigQuery validation helpers
-sdk-service/                     Claude Agent SDK HTTP service for Cloud Run
+sdk-service/                     Claude Code SDK HTTP service for Cloud Run
 frontend-nextjs/                 Minimal Next.js trigger UI
 outputs/                         Generated review and final status files
 ```
@@ -137,13 +137,13 @@ Rules:
 - Ask before running any command that writes to BigQuery.
 ```
 
-## Cloud Run + Claude Agent SDK + Next.js frontend
+## Cloud Run + Claude Code SDK + Next.js frontend
 
 ```text
 frontend-nextjs
   -> HTTP POST /api/run-workflow
       -> Cloud Run sdk-service
-          -> Claude Agent SDK query()
+          -> Claude Code SDK query()
               -> .claude/agents
               -> .claude/skills
               -> workflows/dataform-lab-subagents.md
@@ -158,14 +158,14 @@ frontend-nextjs/README.md
 
 ## SDK correctness notes
 
-The SDK implementation uses the current Claude Agent SDK package and docs pattern:
+The SDK implementation follows the current official Claude Code SDK Python pattern:
 
-- Python package: `claude_agent_sdk`.
-- Options class: `ClaudeAgentOptions`.
-- Main runner: `query()`.
-- Skills require `.claude/skills/*/SKILL.md`, `setting_sources=["user", "project"]`, and `allowed_tools` containing `"Skill"`.
-- SDK subagents require `allowed_tools` containing `"Agent"`.
-- Programmatic subagents use `AgentDefinition` and camelCase fields where applicable.
+- Python package: `claude_code_sdk`.
+- Options class: `ClaudeCodeOptions`.
+- One-shot runner: `query()`.
+- Streaming client option: `ClaudeSDKClient`.
+- Project settings and `.claude/agents` / `.claude/skills` are loaded from the lab working directory.
+- The service grants the tools needed by this lab, including `Read`, `Write`, `Edit`, `Bash`, `Task`, and `Skill`.
 
 ## Architecture point
 
@@ -174,5 +174,5 @@ Skill = how to do something.
 Agent = who is responsible for doing/reviewing something.
 Workflow = when and in what order work happens.
 Agent Team = multiple role agents working in parallel.
-Agent SDK = programmable/event-driven/cloud-hosted execution.
+Code SDK = programmable/event-driven/cloud-hosted execution.
 ```
