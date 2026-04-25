@@ -1,0 +1,7 @@
+defaultProject: ${GCP_PROJECT_ID}
+defaultLocation: ${BQ_LOCATION}
+defaultDataset: ${BQ_TARGET_DATASET}
+defaultAssertionDataset: ${BQ_ASSERTION_DATASET}
+dataformCoreVersion: 3.0.0
+vars:
+  source_dataset: ${BQ_SOURCE_DATASET}
