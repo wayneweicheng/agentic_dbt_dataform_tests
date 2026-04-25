@@ -22,15 +22,41 @@ Tech Spec
 
 ```text
 .claude/agents/      role agents
-.claude/skills/      reusable skills
+.claude/skills/      reusable skill packages
 workflows/           workflow templates
 tech_specs/          source technical specs
-dataform/            sample Dataform project
+dataform/            sample/generated Dataform project implementation
 tests/               scenario, mock, expected, and report artifacts
 scripts/             local and BigQuery helper scripts
 sdk-service/         Claude Agent SDK service for Cloud Run
 frontend-nextjs/     minimal Next.js trigger app
 outputs/             generated notes and final status
+```
+
+## Skill package layout
+
+Each skill is a package, not just a `SKILL.md` file:
+
+```text
+.claude/skills/<skill-name>/
+  SKILL.md              main skill instructions and trigger metadata
+  references/           checklists, design rules, and usage notes
+  assets/               templates and reusable examples
+  scripts/              deterministic helper scripts the skill can use
+```
+
+## Role of `dataform/definitions`
+
+`dataform/definitions` is the lab Dataform project implementation area. It contains example SQLX files and the files that the code-generation agent may create or update.
+
+It should not live under the `dataform-code-generation` skill because skills are reusable capability packages. The skill should contain reusable templates, references, and helper scripts. The project-level `dataform/definitions` folder contains concrete implementation output for this lab.
+
+```text
+Reusable capability:
+  .claude/skills/dataform-code-generation/
+
+Concrete lab implementation:
+  dataform/definitions/
 ```
 
 ## Local validation
@@ -103,20 +129,12 @@ sdk-service/README.md
 frontend-nextjs/README.md
 ```
 
-The SDK implementation follows the current Claude Agent SDK pattern:
-
-- package: `claude-agent-sdk`
-- import module: `claude_agent_sdk`
-- options class: `ClaudeAgentOptions`
-- runner: `query()`
-- subagents: `AgentDefinition`
-- skills: `.claude/skills/*/SKILL.md`
-- SDK options include project settings plus `Skill` and `Agent` tools
+The SDK service reuses the same filesystem agents under `.claude/agents` and the same filesystem skills under `.claude/skills`. This avoids duplicating agent definitions in Python.
 
 ## Architecture summary
 
 ```text
-Skill = how to do something.
+Skill = reusable capability package.
 Agent = who is responsible for doing or reviewing something.
 Workflow = when and in what order work happens.
 Agent Team = multiple role agents working in parallel.
