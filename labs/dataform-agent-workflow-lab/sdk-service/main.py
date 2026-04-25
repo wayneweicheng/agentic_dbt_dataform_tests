@@ -1,7 +1,7 @@
 """Cloud Run HTTP service for the Dataform Agent Workflow Lab.
 
-This service demonstrates how to run the same skills + role-agent workflow from a
-front end or other event source using the Claude Agent SDK.
+This service demonstrates how to run the same filesystem skills and filesystem
+subagents from a front end or other event source using the Claude Agent SDK.
 """
 
 from __future__ import annotations
@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 from typing import Literal
 
-from claude_agent_sdk import AgentDefinition, ClaudeAgentOptions, ResultMessage, query
+from claude_agent_sdk import ClaudeAgentOptions, ResultMessage, query
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
@@ -48,25 +48,30 @@ User notes:
 {request.user_notes}
 
 Required behavior:
-1. Use the orchestrator role.
-2. Delegate code generation to tech-spec-codegen-agent.
-3. Delegate independent review to code-review-agent.
-4. Delegate scenario coverage and validation to scenario-test-agent.
-5. Write final status to outputs/final-status.md.
-6. Keep file ownership boundaries from the workflow.
-7. For validation_mode=local, use local helper scripts only.
-8. For validation_mode=bigquery, use the configured lab datasets and document every command.
+1. Use the project filesystem subagents in .claude/agents.
+2. Use the orchestrator role to coordinate the workflow.
+3. Delegate code generation to tech-spec-codegen-agent.
+4. Delegate independent review to code-review-agent.
+5. Delegate scenario coverage and validation to scenario-test-agent.
+6. Use project skills under .claude/skills when relevant.
+7. Write final status to outputs/final-status.md.
+8. Keep file ownership boundaries from the workflow.
+9. For validation_mode=local, use local helper scripts only.
+10. For validation_mode=bigquery, use the configured lab datasets and document every command.
 """.strip()
 
 
 def build_options(lab_dir: Path, max_turns: int) -> ClaudeAgentOptions:
-    """Build SDK options aligned with current Claude Agent SDK docs.
+    """Build SDK options using filesystem agents and filesystem skills.
 
-    Key points:
-    - setting_sources includes project so .claude/skills and CLAUDE.md are loaded.
-    - allowed_tools includes Skill so filesystem skills are available.
-    - allowed_tools includes Agent so programmatic subagents can be invoked.
-    - AgentDefinition includes explicit skills for each specialist role.
+    This lab intentionally avoids programmatic AgentDefinition entries because
+    the role agents already live in .claude/agents for Claude Code and Agent
+    Team mode. Reusing those files keeps the SDK path aligned with local use.
+
+    Current Claude Agent SDK docs support filesystem-based subagents from
+    .claude/agents and filesystem skills from .claude/skills when project
+    settings are loaded. The Agent and Skill tools must be allowed when using
+    an explicit tool allowlist.
     """
 
     return ClaudeAgentOptions(
@@ -83,36 +88,6 @@ def build_options(lab_dir: Path, max_turns: int) -> ClaudeAgentOptions:
             "Skill",
             "Agent",
         ],
-        agents={
-            "tech-spec-codegen-agent": AgentDefinition(
-                description="Generates Dataform SQLX implementation from the technical specification.",
-                prompt=(
-                    "You generate Dataform SQLX from the tech spec. "
-                    "Own dataform/definitions/** and outputs/codegen-notes.md. "
-                    "Do not edit review or test report files."
-                ),
-                tools=["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Skill"],
-                skills=["tech-spec-extraction", "dataform-code-generation"],
-            ),
-            "code-review-agent": AgentDefinition(
-                description="Reviews generated Dataform SQLX for correctness and testability.",
-                prompt=(
-                    "You independently review the generated Dataform implementation. "
-                    "Own outputs/code-review.md. Do not edit implementation files."
-                ),
-                tools=["Read", "Write", "Glob", "Grep", "Skill"],
-                skills=["dataform-code-review"],
-            ),
-            "scenario-test-agent": AgentDefinition(
-                description="Creates scenario tests, mock data, expected results, and validation reports.",
-                prompt=(
-                    "You create scenario coverage and validation artifacts from the tech spec. "
-                    "Own tests/scenarios/**, tests/mock_data/**, tests/expected/**, and tests/reports/**."
-                ),
-                tools=["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Skill"],
-                skills=["scenario-test-generation", "dataform-scenario-testing"],
-            ),
-        },
     )
 
 
