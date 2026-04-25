@@ -66,7 +66,7 @@ def build_options(lab_dir: Path, max_turns: int) -> ClaudeAgentOptions:
     - setting_sources includes project so .claude/skills and CLAUDE.md are loaded.
     - allowed_tools includes Skill so filesystem skills are available.
     - allowed_tools includes Agent so programmatic subagents can be invoked.
-    - programmatic AgentDefinition is used for SDK subagents.
+    - AgentDefinition includes explicit skills for each specialist role.
     """
 
     return ClaudeAgentOptions(
@@ -88,10 +88,11 @@ def build_options(lab_dir: Path, max_turns: int) -> ClaudeAgentOptions:
                 description="Generates Dataform SQLX implementation from the technical specification.",
                 prompt=(
                     "You generate Dataform SQLX from the tech spec. "
-                    "Use project skills when relevant. Own dataform/definitions/** "
-                    "and outputs/codegen-notes.md. Do not edit review or test report files."
+                    "Own dataform/definitions/** and outputs/codegen-notes.md. "
+                    "Do not edit review or test report files."
                 ),
                 tools=["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Skill"],
+                skills=["tech-spec-extraction", "dataform-code-generation"],
             ),
             "code-review-agent": AgentDefinition(
                 description="Reviews generated Dataform SQLX for correctness and testability.",
@@ -100,6 +101,7 @@ def build_options(lab_dir: Path, max_turns: int) -> ClaudeAgentOptions:
                     "Own outputs/code-review.md. Do not edit implementation files."
                 ),
                 tools=["Read", "Write", "Glob", "Grep", "Skill"],
+                skills=["dataform-code-review"],
             ),
             "scenario-test-agent": AgentDefinition(
                 description="Creates scenario tests, mock data, expected results, and validation reports.",
@@ -108,6 +110,7 @@ def build_options(lab_dir: Path, max_turns: int) -> ClaudeAgentOptions:
                     "Own tests/scenarios/**, tests/mock_data/**, tests/expected/**, and tests/reports/**."
                 ),
                 tools=["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Skill"],
+                skills=["scenario-test-generation", "dataform-scenario-testing"],
             ),
         },
     )
